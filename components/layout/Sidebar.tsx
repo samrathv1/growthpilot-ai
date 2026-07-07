@@ -19,8 +19,8 @@ const navItems = [
   { href: '/business-audit', icon: ClipboardList, label: 'Business Audit' },
   { href: '/landing-page-generator', icon: FileText, label: 'Landing Page' },
   { href: '/content-generator', icon: PenTool, label: 'Content Generator' },
-  { href: '/tools/lead-follow-up', icon: MessageSquare, label: 'Lead Follow-up' },
-  { href: '/tools/growth-agent', icon: Zap, label: 'Growth Agent', badge: 'PRO' },
+  { href: '/lead-followup-generator', icon: MessageSquare, label: 'Lead Follow-up' },
+  { href: '/growth-agent', icon: Zap, label: 'Growth Agent', badge: 'PRO' },
 ];
 
 export default function Sidebar() {
