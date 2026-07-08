@@ -1,87 +1,122 @@
 import Link from 'next/link';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowRight, Zap } from 'lucide-react';
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-28 pb-20">
-      {/* Animated background orbs */}
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 pt-24 pb-16">
+      {/* Background mesh */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-violet-600/20 blur-3xl animate-float" />
+        <div className="absolute top-1/4 left-0 w-[500px] h-[500px] rounded-full bg-[#38F29B]/8 blur-3xl animate-pulse-glow" />
         <div
-          className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-cyan-500/15 blur-3xl animate-float"
+          className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-[#22D3EE]/6 blur-3xl animate-float"
           style={{ animationDelay: '2s' }}
         />
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-indigo-600/10 blur-3xl animate-pulse-glow"
-        />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#06111F]/80" />
       </div>
 
-      {/* Grid pattern overlay */}
+      {/* Subtle grid */}
       <div
-        className="absolute inset-0 opacity-[0.03]"
+        className="absolute inset-0 opacity-[0.025] pointer-events-none"
         style={{
-          backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
+          backgroundImage:
+            'linear-gradient(rgba(56,242,155,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(56,242,155,0.6) 1px, transparent 1px)',
+          backgroundSize: '64px 64px',
         }}
       />
 
-      <div className="relative z-10 max-w-5xl mx-auto text-center">
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-violet-500/30 text-sm text-violet-300 font-medium mb-8 animate-fade-in">
-          <Sparkles className="w-4 h-4" />
-          AI-Powered Business Growth Toolkit
-          <span className="bg-violet-500/30 text-violet-200 text-[10px] px-2 py-0.5 rounded-full font-bold">NEW</span>
-        </div>
+      <div className="relative z-10 max-w-7xl mx-auto w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
-        {/* Headline */}
-        <h1 className="text-5xl sm:text-6xl md:text-7xl font-black text-white leading-[1.05] tracking-tight mb-6 animate-slide-up">
-          Turn Any Business Into
-          <br />
-          <span className="gradient-text">a Growth Machine</span>
-          <br />
-          With AI
-        </h1>
+          {/* ── Left: Text Content ── */}
+          <div className="order-2 lg:order-1 text-center lg:text-left">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#38F29B]/30 bg-[#38F29B]/8 text-[#38F29B] text-xs font-bold mb-6 animate-fade-in tracking-wide uppercase">
+              <Zap className="w-3.5 h-3.5" />
+              AI-Powered Business Growth Toolkit
+            </div>
 
-        {/* Subheadline */}
-        <p className="text-slate-400 text-xl md:text-2xl leading-relaxed max-w-3xl mx-auto mb-10 animate-slide-up" style={{ animationDelay: '200ms' }}>
-          GrowthPilot AI generates business audits, landing page copy, content strategies, sales follow-ups, and weekly growth actions — in seconds. For any business. At any stage.
-        </p>
+            {/* Headline */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-white leading-[1.08] tracking-tight mb-5 animate-slide-up">
+              Grow Your Business{' '}
+              <span className="gradient-text block sm:inline">Faster with AI</span>
+            </h1>
 
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up" style={{ animationDelay: '400ms' }}>
-          <Link
-            href="/tools/business-audit"
-            id="cta-start-audit"
-            className="btn-gradient text-white font-bold px-8 py-4 rounded-2xl text-base flex items-center gap-2 shadow-lg shadow-violet-500/20"
-          >
-            🚀 Start Free Audit
-            <ArrowRight className="w-5 h-5" />
-          </Link>
-          <Link
-            href="/dashboard"
-            id="cta-explore-tools"
-            className="px-8 py-4 rounded-2xl text-base font-bold text-slate-300 glass-card border border-white/15 hover:border-white/30 hover:text-white transition-all duration-200 hover:-translate-y-0.5"
-          >
-            Explore AI Tools →
-          </Link>
-        </div>
+            {/* Subheadline */}
+            <p
+              className="text-slate-400 text-base sm:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0 mb-8 animate-slide-up"
+              style={{ animationDelay: '150ms' }}
+            >
+              AI-powered toolkit to generate website copy, content strategies,
+              lead follow-ups, business audits, and growth actions — for any business,
+              in seconds.
+            </p>
 
-        {/* Social proof */}
-        <div className="mt-14 flex flex-wrap items-center justify-center gap-8 text-sm text-slate-500 animate-fade-in" style={{ animationDelay: '600ms' }}>
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-black text-white">5</span>
-            <span>AI-powered tools</span>
+            {/* CTA Buttons */}
+            <div
+              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 animate-slide-up"
+              style={{ animationDelay: '300ms' }}
+            >
+              <Link
+                href="/tools/business-audit"
+                id="cta-start-audit"
+                className="btn-primary w-full sm:w-auto text-center px-7 py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2"
+              >
+                🚀 Start Free Audit
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                href="/dashboard"
+                id="cta-explore-tools"
+                className="btn-outline-green w-full sm:w-auto text-center px-7 py-3.5 rounded-xl text-sm font-bold"
+              >
+                Explore AI Tools →
+              </Link>
+            </div>
+
+            {/* Stats row */}
+            <div
+              className="mt-10 flex items-center justify-center lg:justify-start gap-6 sm:gap-8 text-sm animate-fade-in"
+              style={{ animationDelay: '500ms' }}
+            >
+              {[
+                { value: '5', label: 'AI Tools' },
+                { value: '8+', label: 'Business Types' },
+                { value: '∞', label: 'Growth Actions' },
+              ].map((stat, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  {i > 0 && <div className="w-px h-6 bg-white/10 mr-2" />}
+                  <span className="text-xl font-black text-[#38F29B]">{stat.value}</span>
+                  <span className="text-slate-500 text-xs">{stat.label}</span>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="w-px h-4 bg-white/10" />
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-black text-white">8+</span>
-            <span>business types supported</span>
+
+          {/* ── Right: Banner Image ── */}
+          <div className="order-1 lg:order-2 flex items-center justify-center animate-fade-in">
+            <div className="relative w-full max-w-lg lg:max-w-none">
+              {/* Glow behind image */}
+              <div className="absolute inset-0 bg-[#38F29B]/10 blur-3xl rounded-3xl scale-90" />
+              <div className="relative rounded-2xl overflow-hidden border border-[#38F29B]/20 shadow-2xl shadow-[#38F29B]/10">
+                <Image
+                  src="/images/growthpilot-banner.png"
+                  alt="GrowthPilot AI — Empowering Business Growth with AI"
+                  width={800}
+                  height={450}
+                  className="w-full h-auto object-cover"
+                  priority
+                  quality={90}
+                />
+              </div>
+              {/* Floating badge */}
+              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:-bottom-3 sm:-right-3 glass-card-green rounded-xl px-4 py-2 flex items-center gap-2 border border-[#38F29B]/25 shadow-lg">
+                <div className="w-2 h-2 rounded-full bg-[#38F29B] animate-pulse" />
+                <span className="text-xs font-bold text-[#38F29B]">AI Engine Active</span>
+              </div>
+            </div>
           </div>
-          <div className="w-px h-4 bg-white/10" />
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-black text-white">∞</span>
-            <span>growth possibilities</span>
-          </div>
+
         </div>
       </div>
     </section>

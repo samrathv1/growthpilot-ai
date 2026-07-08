@@ -67,7 +67,7 @@ export default function BusinessAuditPage() {
         icon={<ClipboardList className="w-6 h-6 text-white" />}
         title="AI Business Audit"
         description="Get a comprehensive audit of your business including problem analysis, website improvements, content ideas, automation opportunities, and a 7-day action plan."
-        gradient="from-violet-600 to-indigo-600"
+        gradient="from-[#38F29B] to-[#22D3EE]"
       />
 
       {/* Form card */}

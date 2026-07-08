@@ -60,7 +60,7 @@ export default function ToolForm({ fields, onSubmit, isLoading, submitLabel = 'G
               <label htmlFor={field.id} className="text-sm font-medium text-slate-300">
                 {field.label}
                 {field.required !== false && (
-                  <span className="text-violet-400 ml-1">*</span>
+                  <span className="text-[#38F29B] ml-1">*</span>
                 )}
               </label>
 
@@ -71,7 +71,7 @@ export default function ToolForm({ fields, onSubmit, isLoading, submitLabel = 'G
                   placeholder={field.placeholder}
                   value={formData[field.id] || ''}
                   onChange={(e) => handleChange(field.id, e.target.value)}
-                  className={`w-full px-4 py-3 rounded-xl bg-white/5 border text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all text-sm resize-none ${
+                  className={`w-full px-4 py-3 rounded-xl bg-white/5 border text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-[#38F29B]/40 focus:border-[#38F29B]/40 transition-all text-sm resize-none leading-relaxed ${
                     errors[field.id] ? 'border-red-500/50' : 'border-white/10 hover:border-white/20'
                   }`}
                 />
@@ -80,7 +80,7 @@ export default function ToolForm({ fields, onSubmit, isLoading, submitLabel = 'G
                   id={field.id}
                   value={formData[field.id] || ''}
                   onChange={(e) => handleChange(field.id, e.target.value)}
-                  className={`w-full px-4 py-3 rounded-xl bg-[#0a0f1e] border text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all text-sm ${
+                  className={`w-full px-4 py-3 rounded-xl bg-[#071827] border text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#38F29B]/40 focus:border-[#38F29B]/40 transition-all text-sm ${
                     errors[field.id] ? 'border-red-500/50' : 'border-white/10 hover:border-white/20'
                   }`}
                 >
@@ -96,7 +96,7 @@ export default function ToolForm({ fields, onSubmit, isLoading, submitLabel = 'G
                   placeholder={field.placeholder}
                   value={formData[field.id] || ''}
                   onChange={(e) => handleChange(field.id, e.target.value)}
-                  className={`w-full px-4 py-3 rounded-xl bg-white/5 border text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all text-sm ${
+                  className={`w-full px-4 py-3 rounded-xl bg-white/5 border text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-[#38F29B]/40 focus:border-[#38F29B]/40 transition-all text-sm ${
                     errors[field.id] ? 'border-red-500/50' : 'border-white/10 hover:border-white/20'
                   }`}
                 />

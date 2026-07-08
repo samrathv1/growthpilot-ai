@@ -63,23 +63,24 @@ export default function GrowthAgentPage() {
         icon={<Zap className="w-6 h-6 text-white" />}
         title="AI Growth Agent"
         description="Your personal AI Chief Growth Officer. Just describe your business situation in plain language and get a complete, actionable growth playbook — including best next action, content plan, lead gen ideas, automations, and a 7-day execution plan."
-        gradient="from-orange-500 to-violet-600"
+        gradient="from-amber-400 to-[#38F29B]"
         badge="PREMIUM"
       />
 
       {/* Premium notice */}
-      <div className="mb-6 glass-card rounded-2xl border border-orange-500/20 bg-orange-500/5 p-4 flex items-start gap-3">
-        <div className="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-          <Sparkles className="w-4 h-4 text-orange-400" />
+      <div className="mb-6 glass-card rounded-2xl border border-[#38F29B]/20 bg-[#38F29B]/5 p-4 flex items-start gap-3">
+        <div className="w-8 h-8 rounded-lg bg-[#38F29B]/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <Sparkles className="w-4 h-4 text-[#38F29B]" />
         </div>
         <div>
-          <p className="text-sm font-semibold text-orange-300 mb-0.5">Most Powerful Tool</p>
+          <p className="text-sm font-semibold text-[#38F29B] mb-0.5">Most Powerful Tool</p>
           <p className="text-xs text-slate-400 leading-relaxed">
             The Growth Agent analyzes your complete situation and creates a personalized, multi-channel growth strategy.
             Be as specific as possible for the best results — include your business type, current challenge, budget, and goals.
           </p>
         </div>
       </div>
+
 
       {/* Main input area */}
       <div className="glass-card rounded-2xl border border-white/10 mb-8 overflow-hidden">
@@ -103,7 +104,7 @@ export default function GrowthAgentPage() {
               if (validationError) setValidationError('');
             }}
             placeholder="My business is a local gym. I have 60 members currently and I want to get to 200 members within 3 months. My monthly budget for marketing is ₹3,000. I've been posting on Instagram but not getting results. What should I do this week?"
-            className={`w-full px-4 py-4 rounded-xl bg-white/5 border text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all text-sm resize-none leading-relaxed ${
+            className={`w-full px-4 py-4 rounded-xl bg-white/5 border text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-[#38F29B]/40 focus:border-[#38F29B]/40 transition-all text-sm resize-none leading-relaxed ${
               validationError ? 'border-red-500/50' : 'border-white/10 hover:border-white/20'
             }`}
           />

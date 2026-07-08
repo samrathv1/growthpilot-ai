@@ -83,7 +83,7 @@ export default function ContentGeneratorPage() {
         icon={<PenTool className="w-6 h-6 text-white" />}
         title="AI Content Generator"
         description="Create a complete content package — post ideas, Instagram captions, LinkedIn posts, Reel scripts, ad copies, and a full content calendar. All tailored to your business."
-        gradient="from-blue-600 to-cyan-600"
+        gradient="from-[#22D3EE] to-[#38F29B]"
       />
 
       <div className="glass-card rounded-2xl border border-white/10 p-6 mb-8">

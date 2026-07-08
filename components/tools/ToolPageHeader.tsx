@@ -11,7 +11,7 @@ export default function ToolPageHeader({
   title,
   description,
   badge,
-  gradient = 'from-violet-500 to-indigo-500',
+  gradient = 'from-[#38F29B] to-[#22D3EE]',
 }: ToolPageHeaderProps) {
   return (
     <div className="mb-8">
@@ -23,20 +23,20 @@ export default function ToolPageHeader({
           {icon}
         </div>
         {badge && (
-          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 text-white">
+          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#38F29B]/15 text-[#38F29B] border border-[#38F29B]/30">
             {badge}
           </span>
         )}
       </div>
 
       {/* Title */}
-      <h1 className="text-3xl font-bold text-white mb-2 gradient-text">{title}</h1>
+      <h1 className="text-2xl sm:text-3xl font-black text-white mb-2">{title}</h1>
 
       {/* Description */}
       <p className="text-slate-400 text-base leading-relaxed max-w-2xl">{description}</p>
 
       {/* Bottom gradient line */}
-      <div className="mt-6 h-px bg-gradient-to-r from-violet-500/60 via-indigo-500/30 to-transparent" />
+      <div className="mt-6 h-px bg-gradient-to-r from-[#38F29B]/50 via-[#22D3EE]/20 to-transparent" />
     </div>
   );
 }

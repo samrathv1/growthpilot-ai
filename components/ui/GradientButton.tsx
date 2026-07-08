@@ -20,12 +20,13 @@ export default function GradientButton({
   };
 
   const variants = {
-    primary: 'btn-gradient text-white font-semibold rounded-xl',
+    primary: 'btn-primary text-[#06111F] font-bold rounded-xl',
     secondary:
       'bg-white/5 border border-white/10 text-slate-200 hover:bg-white/10 hover:border-white/20 font-semibold rounded-xl transition-all duration-200 hover:-translate-y-0.5',
     outline:
-      'border border-violet-500/60 text-violet-300 hover:bg-violet-500/10 font-semibold rounded-xl transition-all duration-200 hover:-translate-y-0.5',
+      'btn-outline-green rounded-xl',
   };
+
 
   return (
     <button

@@ -9,10 +9,10 @@ export default function LoadingState({ message = 'AI is generating your results.
     <div className="flex flex-col items-center justify-center py-20 gap-6">
       {/* Animated orb */}
       <div className="relative">
-        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-violet-600 to-cyan-500 animate-pulse-glow flex items-center justify-center">
-          <Sparkles className="w-8 h-8 text-white animate-spin-slow" />
+        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#38F29B] to-[#22D3EE] animate-pulse-glow flex items-center justify-center">
+          <Sparkles className="w-8 h-8 text-[#06111F] animate-spin-slow" />
         </div>
-        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-violet-600 to-cyan-500 blur-xl opacity-30 animate-pulse-glow" />
+        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#38F29B] to-[#22D3EE] blur-xl opacity-25 animate-pulse-glow" />
       </div>
 
       {/* Loading text */}
@@ -26,7 +26,7 @@ export default function LoadingState({ message = 'AI is generating your results.
         {[0, 1, 2].map((i) => (
           <div
             key={i}
-            className="w-2 h-2 rounded-full bg-violet-500"
+            className="w-2 h-2 rounded-full bg-[#38F29B]"
             style={{
               animation: `pulse 1.4s ease-in-out ${i * 0.3}s infinite`,
             }}
@@ -41,7 +41,7 @@ export default function LoadingState({ message = 'AI is generating your results.
             (step, i) => (
               <div key={step} className="flex items-center gap-3">
                 <div
-                  className="w-1.5 h-1.5 rounded-full bg-violet-400"
+                  className="w-1.5 h-1.5 rounded-full bg-[#38F29B]"
                   style={{ animation: `pulse 1.4s ease-in-out ${i * 0.5}s infinite` }}
                 />
                 <span className="text-xs text-slate-400">{step}</span>

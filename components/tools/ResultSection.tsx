@@ -52,7 +52,7 @@ function renderContent(content: string) {
       return (
         <p
           key={i}
-          className="text-violet-300 font-semibold text-sm mt-2"
+          className="text-[#38F29B] font-semibold text-sm mt-2"
           dangerouslySetInnerHTML={{ __html: rendered }}
         />
       );
@@ -76,7 +76,7 @@ interface ResultSectionCardProps {
 function ResultSectionCard({ section, index }: ResultSectionCardProps) {
   return (
     <div
-      className="glass-card rounded-2xl border border-white/10 p-6 group hover:border-violet-500/30 transition-all duration-300 animate-slide-up"
+      className="glass-card rounded-2xl border border-white/8 p-6 group hover:border-[#38F29B]/30 transition-all duration-300 animate-slide-up"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       {/* Header */}
@@ -86,7 +86,7 @@ function ResultSectionCard({ section, index }: ResultSectionCardProps) {
       </div>
 
       {/* Gradient divider */}
-      <div className="h-px bg-gradient-to-r from-violet-500/40 via-cyan-500/20 to-transparent mb-4" />
+      <div className="h-px bg-gradient-to-r from-[#38F29B]/40 via-[#22D3EE]/20 to-transparent mb-4" />
 
       {/* Content */}
       <div className="space-y-1.5 prose-result">
@@ -119,7 +119,7 @@ export default function ResultSection({ sections, onGenerateAgain }: ResultSecti
           {onGenerateAgain && (
             <button
               onClick={onGenerateAgain}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-violet-600/20 text-violet-300 border border-violet-500/30 hover:bg-violet-600/30 transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#38F29B]/10 text-[#38F29B] border border-[#38F29B]/25 hover:bg-[#38F29B]/20 transition-all"
             >
               ↺ Generate Again
             </button>

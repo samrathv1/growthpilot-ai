@@ -81,7 +81,7 @@ export default function LeadFollowUpPage() {
         icon={<MessageSquare className="w-6 h-6 text-white" />}
         title="AI Lead Follow-up Generator"
         description="Never lose a lead again. Generate personalized WhatsApp messages, email follow-ups, call scripts, closing messages, and reminders — all customized to address their specific objection."
-        gradient="from-cyan-600 to-teal-600"
+        gradient="from-[#38F29B] to-emerald-500"
       />
 
       <div className="glass-card rounded-2xl border border-white/10 p-6 mb-8">

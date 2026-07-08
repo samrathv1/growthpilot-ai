@@ -15,20 +15,22 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "GrowthPilot AI — Business AI Toolkit",
   description:
-    "Turn any business into a growth machine with AI. Generate business audits, landing page copy, content ideas, sales follow-ups, and weekly growth actions in minutes.",
+    "AI-powered business toolkit to generate website copy, content strategies, lead follow-ups, business audits, and growth actions — in seconds.",
   keywords: [
-    "AI business tools",
-    "business growth AI",
-    "landing page generator",
-    "content generator AI",
-    "business audit AI",
-    "GrowthPilot AI",
+    "AI business tools", "business growth AI", "landing page generator",
+    "content generator AI", "business audit AI", "GrowthPilot AI",
+    "lead follow-up AI", "growth agent AI",
   ],
   openGraph: {
     title: "GrowthPilot AI — Business AI Toolkit",
-    description:
-      "Turn any business into a growth machine with AI. Your premium AI command center for growth.",
+    description: "AI-powered toolkit to grow your business faster. Generate audits, copy, content, and growth plans in seconds.",
     type: "website",
+    images: ["/images/growthpilot-banner.png"],
+  },
+  icons: {
+    icon: "/images/growthpilot-logo.png",
+    shortcut: "/images/growthpilot-logo.png",
+    apple: "/images/growthpilot-logo.png",
   },
 };
 
@@ -41,8 +43,9 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      data-scroll-behavior="smooth"
     >
-      <body className="min-h-full bg-[#050816] text-slate-100">{children}</body>
+      <body className="min-h-full bg-[#06111F] text-slate-100">{children}</body>
     </html>
   );
 }

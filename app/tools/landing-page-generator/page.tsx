@@ -81,7 +81,7 @@ export default function LandingPageGeneratorPage() {
         icon={<FileText className="w-6 h-6 text-white" />}
         title="AI Landing Page Generator"
         description="Generate complete, high-converting landing page copy — hero headlines, benefits, service sections, FAQ, and compelling CTAs. Ready to copy and paste."
-        gradient="from-indigo-600 to-blue-600"
+        gradient="from-[#22D3EE] to-sky-500"
       />
 
       <div className="glass-card rounded-2xl border border-white/10 p-6 mb-8">
