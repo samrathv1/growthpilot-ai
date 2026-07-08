@@ -29,15 +29,6 @@ export default function LandingPage() {
 
         <FinalCTA />
       </main>
-
-      {/* Footer */}
-      <footer className="border-t border-white/5 py-8 px-6 text-center text-sm text-slate-600">
-        <p>
-          © 2024 <span className="text-violet-400 font-medium">GrowthPilot AI</span> — Business AI Toolkit
-          <span className="mx-3 text-white/10">|</span>
-          Built for business owners who refuse to stay small.
-        </p>
-      </footer>
     </div>
   );
 }
