@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
+import { getCleanErrorMessage } from '@/lib/ai/client';
 
 const MAX_FIELD_LENGTH = 1000;
 
@@ -227,7 +228,7 @@ Important Rules:
 
       const errorMessage = is503
         ? 'Gemini is temporarily busy. Please try again in a few minutes.'
-        : (lastError?.message || 'Failed to generate growth plan.');
+        : getCleanErrorMessage(lastError);
 
       return NextResponse.json({ success: false, error: errorMessage }, { status: is503 ? 503 : 500 });
     }
@@ -256,9 +257,12 @@ Important Rules:
     
     const errString = String(error).toUpperCase() + ' ' + String(error?.message || '').toUpperCase();
     const is503 = error?.status === 503 || errString.includes('503') || errString.includes('UNAVAILABLE');
+    const errorMessage = is503
+      ? 'Gemini is temporarily busy. Please try again in a few minutes.'
+      : getCleanErrorMessage(error);
     
     return NextResponse.json(
-      { success: false, error: is503 ? 'Gemini is temporarily busy. Please try again in a few minutes.' : 'Failed to generate plan. Please try again.' },
+      { success: false, error: errorMessage },
       { status: is503 ? 503 : 500 }
     );
   }

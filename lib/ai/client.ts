@@ -41,6 +41,22 @@ async function callOpenAI(prompt: string): Promise<ResultSection[]> {
   return parseTextToSections(text);
 }
 
+export function getCleanErrorMessage(error: any): string {
+  if (!error) return 'An unknown error occurred';
+  const msg = error.message || String(error);
+  if (typeof msg === 'string' && msg.trim().startsWith('{')) {
+    try {
+      const parsed = JSON.parse(msg);
+      if (parsed.error && typeof parsed.error.message === 'string') {
+        return parsed.error.message;
+      }
+    } catch (e) {
+      // ignore
+    }
+  }
+  return msg;
+}
+
 // ─── Gemini ──────────────────────────────────────────────────────────────────
 
 async function callGemini(tool: ToolId, prompt: string): Promise<ResultSection[]> {
@@ -71,13 +87,14 @@ async function callGemini(tool: ToolId, prompt: string): Promise<ResultSection[]
     console.error('[/lib/ai/client] callGemini: Gemini API request failed:', error.message || error);
     
     // Check for specific error reasons
-    const errString = String(error).toUpperCase();
+    const cleanMsg = getCleanErrorMessage(error);
+    const errString = cleanMsg.toUpperCase();
     if (errString.includes('QUOTA') || errString.includes('LIMIT') || errString.includes('429')) {
       console.error('[/lib/ai/client] callGemini: Detected quota limit / 429 rate limit error');
       throw new Error('Gemini API rate limit exceeded. Please try again later.');
     }
     
-    throw error;
+    throw new Error(cleanMsg);
   }
 }
 

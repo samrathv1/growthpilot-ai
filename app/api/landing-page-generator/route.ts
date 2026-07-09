@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
+import { getCleanErrorMessage } from '@/lib/ai/client';
 
 // Maximum length for fields to prevent abuse
 const MAX_FIELD_LENGTH = 1000;
@@ -282,6 +283,8 @@ Do not include any markdown fences (like \`\`\`json or \`\`\`) in your output. R
 
     if (!response) {
       const errString = String(lastError).toUpperCase() + ' ' + String(lastError?.message || '').toUpperCase();
+      console.error('[/api/landing-page-generator] Gemini API request failed ultimately with error:', lastError);
+      
       const is503 = lastError?.status === 503 || 
                     errString.includes('503') || 
                     errString.includes('UNAVAILABLE') || 
@@ -291,7 +294,7 @@ Do not include any markdown fences (like \`\`\`json or \`\`\`) in your output. R
       
       const errorMessage = is503 
         ? 'Gemini is temporarily busy. Please try again in a few minutes.'
-        : (lastError?.message || 'Failed to generate landing page.');
+        : getCleanErrorMessage(lastError);
         
       return NextResponse.json(
         { success: false, error: errorMessage },
@@ -335,7 +338,7 @@ Do not include any markdown fences (like \`\`\`json or \`\`\`) in your output. R
 
     const errorMessage = is503 
       ? 'Gemini is temporarily busy. Please try again in a few minutes.'
-      : (error?.message || 'Failed to generate landing page. Please try again.');
+      : getCleanErrorMessage(error);
 
     return NextResponse.json(
       { success: false, error: errorMessage },
