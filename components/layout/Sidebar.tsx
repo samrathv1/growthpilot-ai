@@ -11,6 +11,7 @@ import {
   MessageSquare,
   Zap,
   ChevronRight,
+  X,
 } from 'lucide-react';
 
 const navItems = [
@@ -22,14 +23,21 @@ const navItems = [
   { href: '/tools/growth-agent',            icon: Zap,             label: 'Growth Agent', badge: 'PRO' },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export default function Sidebar({ isOpen = false, onClose = () => {} }: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 h-full w-64 bg-[#040e1a] border-r border-white/8 z-40 flex flex-col">
+    <aside className={`fixed left-0 top-0 h-full w-64 max-w-[80%] bg-[#040e1a] border-r border-white/8 z-50 flex flex-col transition-transform duration-300 md:translate-x-0 ${
+      isOpen ? 'translate-x-0' : '-translate-x-full'
+    }`}>
       {/* Brand */}
-      <div className="p-5 border-b border-white/8">
-        <Link href="/" className="flex items-center gap-3 group">
+      <div className="p-5 border-b border-white/8 flex items-center justify-between gap-2">
+        <Link href="/" onClick={onClose} className="flex items-center gap-3 group">
           <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 transition-transform group-hover:scale-105 border border-[#38F29B]/20">
             <Image
               src="/images/growthpilot-logo.png"
@@ -48,6 +56,15 @@ export default function Sidebar() {
             </span>
           </div>
         </Link>
+
+        {/* Close Button for Drawer View */}
+        <button
+          onClick={onClose}
+          className="md:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+          aria-label="Close menu"
+        >
+          <X className="w-4 h-4" />
+        </button>
       </div>
 
       {/* Navigation */}
@@ -61,6 +78,7 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onClose}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group ${
                 isActive
                   ? 'sidebar-active'

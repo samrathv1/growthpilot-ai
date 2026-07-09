@@ -98,14 +98,11 @@ export default function DashboardPage() {
               </p>
             </div>
             {/* Stats row */}
-            <div className="flex items-center gap-4 sm:gap-6 flex-shrink-0">
-              {stats.map((s, i) => (
-                <div key={s.label} className="flex items-center gap-3">
-                  {i > 0 && <div className="w-px h-8 bg-white/8" />}
-                  <div className="text-center">
-                    <p className="text-lg font-black gradient-text leading-none">{s.value}</p>
-                    <p className="text-[10px] text-slate-500 mt-0.5">{s.label}</p>
-                  </div>
+            <div className="grid grid-cols-2 xs:grid-cols-4 sm:flex items-center gap-4 sm:gap-6 flex-shrink-0 w-full sm:w-auto border-t border-white/5 pt-4 sm:pt-0 sm:border-t-0">
+              {stats.map((s) => (
+                <div key={s.label} className="text-center flex-1 sm:flex-none">
+                  <p className="text-lg font-black gradient-text leading-none">{s.value}</p>
+                  <p className="text-[10px] text-slate-500 mt-1">{s.label}</p>
                 </div>
               ))}
             </div>

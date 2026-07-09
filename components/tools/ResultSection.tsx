@@ -76,12 +76,12 @@ interface ResultSectionCardProps {
 function ResultSectionCard({ section, index }: ResultSectionCardProps) {
   return (
     <div
-      className="glass-card rounded-2xl border border-white/8 p-6 group hover:border-[#38F29B]/30 transition-all duration-300 animate-slide-up"
+      className="glass-card rounded-2xl border border-white/8 p-4 sm:p-6 group hover:border-[#38F29B]/30 transition-all duration-300 animate-slide-up"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-4">
-        <h3 className="font-bold text-white text-base leading-tight">{section.title}</h3>
+        <h3 className="font-bold text-white text-sm sm:text-base leading-tight break-words">{section.title}</h3>
         <CopyButton text={section.content} />
       </div>
 
@@ -89,7 +89,7 @@ function ResultSectionCard({ section, index }: ResultSectionCardProps) {
       <div className="h-px bg-gradient-to-r from-[#38F29B]/40 via-[#22D3EE]/20 to-transparent mb-4" />
 
       {/* Content */}
-      <div className="space-y-1.5 prose-result">
+      <div className="space-y-1.5 prose-result overflow-x-auto max-w-full">
         {renderContent(section.content)}
       </div>
     </div>
