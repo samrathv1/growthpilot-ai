@@ -6,7 +6,17 @@ const MAX_FIELD_LENGTH = 1000;
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    let body;
+    try {
+      body = await req.json();
+    } catch (parseErr: any) {
+      console.error('[/api/content-generator] Invalid request body (JSON parse error):', parseErr.message || parseErr);
+      return NextResponse.json(
+        { success: false, error: 'Invalid request body' },
+        { status: 400 }
+      );
+    }
+
     const {
       businessName,
       businessType,
@@ -21,8 +31,9 @@ export async function POST(req: NextRequest) {
 
     // Validate required fields
     if (!businessName || !businessType || !offer || !targetAudience || !platform || !goal || !tone || !contentDuration) {
+      console.error('[/api/content-generator] Missing required fields in request:', body);
       return NextResponse.json(
-        { error: 'Missing required fields. Please fill in all required inputs.' },
+        { success: false, error: 'Missing required fields. Please fill in all required inputs.' },
         { status: 400 }
       );
     }
@@ -41,9 +52,8 @@ export async function POST(req: NextRequest) {
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
-      // Return a realistic mock response for demo / portfolio mode
-      console.log('[/api/content-generator] GEMINI_API_KEY not configured. Returning dynamic mock response.');
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate API delay
+      console.error('[/api/content-generator] Missing GEMINI_API_KEY environment variable. Defaulting to mock response.');
+      await new Promise((resolve) => setTimeout(resolve, 1800)); // Simulate API delay
 
       const durationDays = parseInt(cleanDuration) || 7;
       const calendarEntries = [];
@@ -79,7 +89,7 @@ export async function POST(req: NextRequest) {
           { caption: `Here's the truth about ${cleanType.toLowerCase()} that nobody tells ${cleanAudience}. Swipe to see 👉`, cta: '💡 Follow for more tips', hashtags: ['#ExpertAdvice', `#${cleanName.replace(/\s+/g, '')}`, '#TipsAndTricks'] },
         ],
         reel_scripts: [
-          { hook: `"POV: You finally found a ${cleanType.toLowerCase()} that actually works for ${cleanAudience}..."`, script: `Show a before-and-after transformation or day-in-the-life using ${cleanOffer}. End with a clear call-to-action.`, visual_idea: `Quick cuts showing the problem → the solution → the result. Use trending audio.`, cta: cleanGoal === 'Get more leads' ? 'DM us "START" for a free consultation' : 'Tap the link in bio' },
+          { hook: `"POV: You finally found a ${cleanType.toLowerCase()} that actually works for ${cleanAudience}..."`, script: `Show a before-and-after transformation or day-in-the-life using ${cleanOffer}. End with a call-to-action.`, visual_idea: `Quick cuts showing the problem → the solution → the result. Use trending audio.`, cta: cleanGoal === 'Get more leads' ? 'DM us "START" for a free consultation' : 'Tap the link in bio' },
           { hook: `"3 things I wish I knew before starting ${cleanType.toLowerCase()}..."`, script: `Share 3 quick tips or lessons that position ${cleanName} as the expert. Keep each tip under 5 seconds.`, visual_idea: `Talking head with text overlays for each tip. Fast-paced edits.`, cta: 'Follow for more tips like this' },
         ],
         ad_copies: [
@@ -99,12 +109,12 @@ export async function POST(req: NextRequest) {
         final_recommendation: `Focus the first week on building trust and authority through educational content. Use Reels and carousels for maximum reach on ${cleanPlatform}. Every piece of content should tie back to "${cleanGoal}" with a clear, low-friction CTA. Consistency and ${cleanTone.toLowerCase()} messaging will set ${cleanName} apart from generic ${cleanType.toLowerCase()} competitors.`,
       };
 
-      return NextResponse.json(mockResponse);
+      return NextResponse.json({ success: true, content: mockResponse });
     }
 
     // Initialize Google Gen AI client
     const ai = new GoogleGenAI({ apiKey });
-    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    const model = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
 
     const systemPrompt = `You are an expert social media strategist, content marketer, and copywriter. Create a comprehensive, platform-specific content plan for the given business. Make content specific, actionable, and ready to use. Avoid generic filler content. Every caption, script, and ad copy should be written as if a real marketing professional created it for a paying client. Return only valid JSON in the required structure.`;
 
@@ -186,7 +196,7 @@ Do not include any markdown fences (like \`\`\`json or \`\`\`) in your output. R
         break; // Success
       } catch (err: any) {
         lastError = err;
-        console.warn(`[Attempt ${attempt + 1}/${maxRetries + 1}] Gemini API call failed:`, err.message || err);
+        console.error(`[/api/content-generator] [Attempt ${attempt + 1}/${maxRetries + 1}] Gemini API call failed:`, err.message || err);
         
         if (attempt < maxRetries) {
           await new Promise((resolve) => setTimeout(resolve, retryDelay));
@@ -196,6 +206,8 @@ Do not include any markdown fences (like \`\`\`json or \`\`\`) in your output. R
 
     if (!response) {
       const errString = String(lastError).toUpperCase() + ' ' + String(lastError?.message || '').toUpperCase();
+      console.error('[/api/content-generator] Gemini API request failed ultimately with error:', lastError);
+      
       const is503 = lastError?.status === 503 ||
                     errString.includes('503') ||
                     errString.includes('UNAVAILABLE') ||
@@ -208,13 +220,14 @@ Do not include any markdown fences (like \`\`\`json or \`\`\`) in your output. R
         : (lastError?.message || 'Failed to generate content plan.');
 
       return NextResponse.json(
-        { error: errorMessage },
+        { success: false, error: errorMessage },
         { status: is503 ? 503 : 500 }
       );
     }
 
     const responseText = response.text || '';
     if (!responseText) {
+      console.error('[/api/content-generator] Empty response text received from Gemini API');
       throw new Error('Empty response received from Gemini API');
     }
 
@@ -223,7 +236,7 @@ Do not include any markdown fences (like \`\`\`json or \`\`\`) in your output. R
     try {
       parsedResult = JSON.parse(responseText.trim());
     } catch (parseError) {
-      console.error('Failed to parse Gemini response as JSON. Raw response:', responseText);
+      console.error('[/api/content-generator] Failed to parse Gemini response as JSON. Raw response:', responseText);
       const cleanedText = responseText
         .replace(/```json/g, '')
         .replace(/```/g, '')
@@ -232,8 +245,11 @@ Do not include any markdown fences (like \`\`\`json or \`\`\`) in your output. R
     }
 
     return NextResponse.json({
-      ...parsedResult,
-      isDemoMode: false,
+      success: true,
+      content: {
+        ...parsedResult,
+        isDemoMode: false,
+      }
     });
   } catch (error: any) {
     console.error('[/api/content-generator] Fatal Error:', error);
@@ -251,7 +267,7 @@ Do not include any markdown fences (like \`\`\`json or \`\`\`) in your output. R
       : (error?.message || 'Failed to generate content plan. Please try again.');
 
     return NextResponse.json(
-      { error: errorMessage },
+      { success: false, error: errorMessage },
       { status: is503 ? 503 : 500 }
     );
   }

@@ -6,19 +6,21 @@ import 'server-only';
 import { ToolId, ResultSection } from '@/types';
 import { getPromptForTool } from './prompts';
 import { getMockResponse } from './mock-responses';
+import { GoogleGenAI } from '@google/genai';
 
 // ─── OpenAI ─────────────────────────────────────────────────────────────────
 
 async function callOpenAI(prompt: string): Promise<ResultSection[]> {
   const apiKey = process.env.OPENAI_API_KEY;
-  // Guard: key must be present (checked by caller, but double-checked here)
-  if (!apiKey) throw new Error('OPENAI_API_KEY is not configured');
+  if (!apiKey) {
+    console.error('[/lib/ai/client] callOpenAI: OPENAI_API_KEY is not configured');
+    throw new Error('OPENAI_API_KEY is not configured');
+  }
 
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      // Key is read from server env — never sent to or from the browser
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
@@ -30,6 +32,7 @@ async function callOpenAI(prompt: string): Promise<ResultSection[]> {
 
   if (!response.ok) {
     const err = await response.text().catch(() => 'Unknown error');
+    console.error(`[/lib/ai/client] callOpenAI: OpenAI API error (${response.status}):`, err);
     throw new Error(`OpenAI API error (${response.status}): ${err}`);
   }
 
@@ -40,27 +43,42 @@ async function callOpenAI(prompt: string): Promise<ResultSection[]> {
 
 // ─── Gemini ──────────────────────────────────────────────────────────────────
 
-async function callGemini(prompt: string): Promise<ResultSection[]> {
+async function callGemini(tool: ToolId, prompt: string): Promise<ResultSection[]> {
   const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) throw new Error('GEMINI_API_KEY is not configured');
-
-  // Key is appended server-side to the URL — it never touches the browser
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
-  });
-
-  if (!response.ok) {
-    const err = await response.text().catch(() => 'Unknown error');
-    throw new Error(`Gemini API error (${response.status}): ${err}`);
+  if (!apiKey) {
+    console.error('[/lib/ai/client] callGemini: GEMINI_API_KEY is not configured');
+    throw new Error('GEMINI_API_KEY is not configured');
   }
 
-  const json = await response.json();
-  const text: string = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  return parseTextToSections(text);
+  const model = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+  console.log(`[/lib/ai/client] Initializing GoogleGenAI client for tool "${tool}" using model "${model}"...`);
+
+  try {
+    const ai = new GoogleGenAI({ apiKey });
+    const response = await ai.models.generateContent({
+      model,
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+    });
+
+    const text = response.text || '';
+    if (!text) {
+      console.error('[/lib/ai/client] callGemini: Empty response text received from Gemini API');
+      throw new Error('Empty response received from Gemini API');
+    }
+
+    return parseTextToSections(text);
+  } catch (error: any) {
+    console.error('[/lib/ai/client] callGemini: Gemini API request failed:', error.message || error);
+    
+    // Check for specific error reasons
+    const errString = String(error).toUpperCase();
+    if (errString.includes('QUOTA') || errString.includes('LIMIT') || errString.includes('429')) {
+      console.error('[/lib/ai/client] callGemini: Detected quota limit / 429 rate limit error');
+      throw new Error('Gemini API rate limit exceeded. Please try again later.');
+    }
+    
+    throw error;
+  }
 }
 
 // ─── Text Parser ─────────────────────────────────────────────────────────────
@@ -86,9 +104,6 @@ function parseTextToSections(text: string): ResultSection[] {
 }
 
 // ─── Public Entry Point ───────────────────────────────────────────────────────
-//
-// Called only from app/api/generate/route.ts (a server Route Handler).
-// process.env values are NEVER forwarded to the client response.
 
 export async function generateContent(
   tool: ToolId,
@@ -101,10 +116,11 @@ export async function generateContent(
 
   if (process.env.GEMINI_API_KEY) {
     const prompt = getPromptForTool(tool, data);
-    return callGemini(prompt);
+    return callGemini(tool, prompt);
   }
 
   // No key set — use realistic mock responses (demo / portfolio mode)
+  console.warn(`[/lib/ai/client] generateContent: No API key found. Defaulting to dynamic mock response for tool "${tool}".`);
   await new Promise((resolve) => setTimeout(resolve, 1800));
   return getMockResponse(tool);
 }

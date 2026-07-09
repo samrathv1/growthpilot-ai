@@ -62,8 +62,8 @@ export default function LandingPageGeneratorPage() {
         body: JSON.stringify({ tool: 'landing-page-generator', data }),
       });
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error);
-      setResults(json.sections);
+      if (!res.ok || json.success === false) throw new Error(json.error || 'Failed to generate');
+      setResults(json.content);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
     } finally {

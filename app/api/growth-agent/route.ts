@@ -44,62 +44,61 @@ export async function POST(req: NextRequest) {
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
-      // Mock fallback
-      console.log('[/api/growth-agent] GEMINI_API_KEY not configured. Returning dynamic mock response.');
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
+      console.error('[/api/growth-agent] Missing GEMINI_API_KEY environment variable. Defaulting to mock response.');
+      await new Promise(resolve => setTimeout(resolve, 1800)); // Simulate API delay
+      
       const mockResponse = {
         isDemoMode: true,
         business_diagnosis: {
-          summary: `${cleanBusinessName} is a ${cleanBusinessType} struggling with ${cleanBiggestProblem.toLowerCase()}.`,
-          main_problem: cleanBiggestProblem,
-          growth_stage: "Scaling",
-          priority_level: "High"
+          summary: `${cleanBusinessName} is currently operating as a ${cleanBusinessType} with the primary goal of: ${cleanMainGoal}. Their biggest constraint is "${cleanBiggestProblem}".`,
+          main_problem: `Lack of a streamlined automated mechanism to nurture ${cleanTargetAudience} and convert them to the core offer: ${cleanOffer}.`,
+          growth_stage: cleanBudgetLevel === 'Low' || cleanBudgetLevel === 'Zero' ? 'Starting' : 'Stabilizing',
+          priority_level: 'High'
         },
         next_best_action: {
-          title: `Focus on ${cleanMainGoal.toLowerCase()}`,
-          reason: `Because you want to see results in ${cleanTimeframe.toLowerCase()}.`,
-          expected_impact: "High immediate return on investment"
+          title: `Build a highly focused Lead Magnet landing page for ${cleanOffer}`,
+          reason: `It addresses the core constraint "${cleanBiggestProblem}" at a low budget by converting organic traffic into qualified leads.`,
+          expected_impact: 'Expected 15-25% increase in weekly opt-in rate.'
         },
         website_actions: [
-          { action: "Optimize hero section", why_it_matters: "First impressions drive conversions", difficulty: "Low" },
-          { action: "Add clear CTA for " + cleanOffer, why_it_matters: "Directs users to purchase", difficulty: "Medium" }
+          { action: "Place a bold value proposition above the fold explaining what makes your offer unique.", why_it_matters: "Keeps visitors from leaving within the first 5 seconds.", difficulty: "Low" },
+          { action: "Embed a simple lead capture form that requests only Name, Email, and Phone Number.", why_it_matters: "Reduces friction for your target customers.", difficulty: "Low" },
+          { action: "Add 3 prominent customer testimonials or results below the form.", why_it_matters: "Establishes immediate trust.", difficulty: "Medium" }
         ],
         content_actions: [
-          { action: "Post 3 Reels about " + cleanOffer, platform: "Instagram", content_idea: "Behind the scenes", cta: "Link in bio" }
+          { action: "Create a 3-part educational post series detailing tips on " + cleanBusinessType + ".", platform: "LinkedIn / Instagram", content_idea: "Debunking 3 common myths that hold back clients.", cta: "Comment 'GROWTH' to download our complete strategy guide." }
         ],
         lead_followup_actions: [
-          { action: "Send WhatsApp message to new leads", message_angle: "Quick check-in", when_to_send: "Within 5 minutes" }
+          { action: "Send a friendly WhatsApp/email sequence within 5 minutes of sign-up.", message_angle: "Offer immediate help or answer standard FAQs.", when_to_send: "Instant" }
         ],
         automation_actions: [
-          { automation: "Automated Email sequence", tool_suggestion: "Mailchimp / ActiveCampaign", benefit: "Nurtures leads automatically" }
+          { automation: "Integrate form submissions directly with Google Sheets or CRM.", tool_suggestion: "Zapier / Make", benefit: "Zero manual data entry delays." }
         ],
         seven_day_growth_plan: [
-          { day: "Day 1", task: "Audit existing website", goal: "Identify conversion blockers" },
-          { day: "Day 3", task: "Set up automated follow-up", goal: "Never miss a lead" },
-          { day: "Day 7", task: "Launch new content campaign", goal: "Generate fresh traffic" }
+          { day: "Day 1", task: "Configure the lead form and connect it to your database.", goal: "Lead capture automation set up." },
+          { day: "Day 2", task: "Draft 3 quick social media posts addressing " + cleanTargetAudience + ".", goal: "Organic traffic generation ready." },
+          { day: "Day 3", task: "Send a re-engagement email to all existing leads or past contacts.", goal: "Reactivate stale conversations." }
         ],
         thirty_day_growth_plan: [
-          { week: "Week 1", focus: "Foundation setup", actions: ["Website audit", "CRM setup", "Offer refinement"] },
-          { week: "Week 2", focus: "Content strategy", actions: ["Plan 30 days of content", "Record 5 videos", "Setup social tools"] }
+          { week: "Week 1", focus: "Conversion Landing Page Setup", actions: ["Deploy the CTA button", "Add social proof reviews"] }
         ],
-        quick_wins: ["Add a WhatsApp widget to the website", "Email past leads with a special offer"],
-        mistakes_to_avoid: ["Not following up fast enough", "Confusing website copy", "Trying to be on every platform at once"],
+        quick_wins: ["Standardize lead replies", "Post a client success story"],
+        mistakes_to_avoid: ["Not following up leads within 24 hours", "Complicating the landing page checkout"],
         recommended_growth_stack: {
-          website: "WordPress / Framer",
-          content: "Canva + Buffer",
-          lead_capture: "Typeform",
-          followup: "WhatsApp Business API",
-          automation: "Zapier"
+          website: "Carrd or WordPress",
+          content: "Canva / ChatGPT",
+          lead_capture: "Tally Forms",
+          followup: "Email Octopus / Mailerlite",
+          automation: "Make.com"
         },
         final_recommendation: `Stay focused on ${cleanMainGoal.toLowerCase()} and execute the 7-day plan consistently.`
       };
 
-      return NextResponse.json(mockResponse);
+      return NextResponse.json({ success: true, content: mockResponse });
     }
 
     const ai = new GoogleGenAI({ apiKey });
-    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite';
+    const model = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
 
     const systemPrompt = `You are an elite AI Business Consultant and Growth Strategist. Your goal is to analyze a business's current state and generate a hyper-specific, actionable growth plan spanning website, content, leads, sales, and automation. Give practical actions the owner can actually do based on their budget and timeframe. Avoid generic fluff. Return ONLY valid JSON matching the exact requested structure.`;
 
@@ -246,8 +245,11 @@ Important Rules:
     }
 
     return NextResponse.json({
-      ...parsedResult,
-      isDemoMode: false,
+      success: true,
+      content: {
+        ...parsedResult,
+        isDemoMode: false,
+      }
     });
   } catch (error: any) {
     console.error('[/api/growth-agent] Fatal Error:', error);

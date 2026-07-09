@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
 
     if (!apiKey) {
       // Return a realistic mock response for demo / portfolio mode
-      console.log('[/api/business-audit] GEMINI_API_KEY not configured. Returning dynamic mock response.');
+      console.error('[/api/business-audit] Missing GEMINI_API_KEY environment variable. Defaulting to mock response.');
       await new Promise((resolve) => setTimeout(resolve, 1800)); // Simulate API delay
       
       const mockResponse = {
@@ -74,45 +74,45 @@ export async function POST(req: NextRequest) {
         final_recommendation: `To successfully achieve your goal of "${cleanGoal}", you must lower the friction for ${cleanAudience} to engage with ${cleanName}. Focus on establishing a fast, automated follow-up process and presenting clear social proof immediately to build maximum trust.`
       };
 
-      return NextResponse.json(mockResponse);
+      return NextResponse.json({ success: true, content: mockResponse });
     }
 
     // Initialize Google Gen AI client using @google/genai
     const ai = new GoogleGenAI({ apiKey });
-    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    const model = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
 
     const systemPrompt = `You are an expert AI business consultant and growth strategist. Analyze the given business details and create a practical business audit. Keep the advice simple, useful, and action-focused. Do not give generic advice. Give suggestions that can help the business improve leads, website, content, sales follow-up, and automation. Return only valid JSON in the required structure.`;
 
     const userPrompt = `
-Analyze this business and return a structured JSON response:
-- Business Name: ${cleanName}
-- Business Type: ${cleanType}
-- Website/Instagram Link: ${cleanWebsite}
-- Main Goal: ${cleanGoal}
-- Target Audience: ${cleanAudience}
-
-Expected JSON response structure:
-{
-  "business_summary": "A short summary of the business based on the inputs and their online presence context.",
-  "main_problems": ["Problem 1", "Problem 2", "Problem 3"],
-  "website_improvements": ["Improvement 1", "Improvement 2", "Improvement 3"],
-  "content_ideas": ["Content Idea 1", "Content Idea 2", "Content Idea 3", "Content Idea 4"],
-  "automation_ideas": ["Automation Idea 1", "Automation Idea 2", "Automation Idea 3"],
-  "ai_tool_suggestions": ["AI Tool 1", "AI Tool 2", "AI Tool 3"],
-  "seven_day_action_plan": [
-    { "day": "Day 1", "task": "Task detail for Day 1" },
-    { "day": "Day 2", "task": "Task detail for Day 2" },
-    { "day": "Day 3", "task": "Task detail for Day 3" },
-    { "day": "Day 4", "task": "Task detail for Day 4" },
-    { "day": "Day 5", "task": "Task detail for Day 5" },
-    { "day": "Day 6", "task": "Task detail for Day 6" },
-    { "day": "Day 7", "task": "Task detail for Day 7" }
-  ],
-  "final_recommendation": "A summarizing final recommendation that wraps up the action strategy."
-}
-
-Do not include any markdown fences (like \`\`\`json or \`\`\`) in your output. Return ONLY the raw JSON string. Ensure it is valid JSON.
-`;
+    Analyze this business and return a structured JSON response:
+    - Business Name: ${cleanName}
+    - Business Type: ${cleanType}
+    - Website/Instagram Link: ${cleanWebsite}
+    - Main Goal: ${cleanGoal}
+    - Target Audience: ${cleanAudience}
+    
+    Expected JSON response structure:
+    {
+      "business_summary": "A short summary of the business based on the inputs and their online presence context.",
+      "main_problems": ["Problem 1", "Problem 2", "Problem 3"],
+      "website_improvements": ["Improvement 1", "Improvement 2", "Improvement 3"],
+      "content_ideas": ["Content Idea 1", "Content Idea 2", "Content Idea 3", "Content Idea 4"],
+      "automation_ideas": ["Automation Idea 1", "Automation Idea 2", "Automation Idea 3"],
+      "ai_tool_suggestions": ["AI Tool 1", "AI Tool 2", "AI Tool 3"],
+      "seven_day_action_plan": [
+        { "day": "Day 1", "task": "Task detail for Day 1" },
+        { "day": "Day 2", "task": "Task detail for Day 2" },
+        { "day": "Day 3", "task": "Task detail for Day 3" },
+        { "day": "Day 4", "task": "Task detail for Day 4" },
+        { "day": "Day 5", "task": "Task detail for Day 5" },
+        { "day": "Day 6", "task": "Task detail for Day 6" },
+        { "day": "Day 7", "task": "Task detail for Day 7" }
+      ],
+      "final_recommendation": "A summarizing final recommendation that wraps up the action strategy."
+    }
+    
+    Do not include any markdown fences (like \`\`\`json or \`\`\`) in your output. Return ONLY the raw JSON string. Ensure it is valid JSON.
+    `;
 
     let lastError: any = null;
     let response = null;
@@ -133,7 +133,7 @@ Do not include any markdown fences (like \`\`\`json or \`\`\`) in your output. R
         break; // Success! Break the loop
       } catch (err: any) {
         lastError = err;
-        console.warn(`[Attempt ${attempt + 1}/${maxRetries + 1}] Gemini API call failed:`, err.message || err);
+        console.error(`[/api/business-audit] [Attempt ${attempt + 1}/${maxRetries + 1}] Gemini API call failed:`, err.message || err);
         
         // If we have retries left, wait before retrying
         if (attempt < maxRetries) {
@@ -145,6 +145,8 @@ Do not include any markdown fences (like \`\`\`json or \`\`\`) in your output. R
     if (!response) {
       // Analyze error context to see if it is 503 (service busy) or similar
       const errString = String(lastError).toUpperCase() + ' ' + String(lastError?.message || '').toUpperCase();
+      console.error('[/api/business-audit] Gemini API request failed ultimately with error:', lastError);
+      
       const is503 = lastError?.status === 503 || 
                     errString.includes('503') || 
                     errString.includes('UNAVAILABLE') || 
@@ -157,13 +159,14 @@ Do not include any markdown fences (like \`\`\`json or \`\`\`) in your output. R
         : (lastError?.message || 'Failed to generate audit.');
         
       return NextResponse.json(
-        { error: errorMessage },
+        { success: false, error: errorMessage },
         { status: is503 ? 503 : 500 }
       );
     }
 
     const responseText = response.text || '';
     if (!responseText) {
+      console.error('[/api/business-audit] Empty response received from Gemini API');
       throw new Error('Empty response received from Gemini API');
     }
 
@@ -172,7 +175,7 @@ Do not include any markdown fences (like \`\`\`json or \`\`\`) in your output. R
     try {
       parsedResult = JSON.parse(responseText.trim());
     } catch (parseError) {
-      console.error('Failed to parse Gemini response as JSON. Raw response:', responseText);
+      console.error('[/api/business-audit] Failed to parse Gemini response as JSON. Raw response:', responseText);
       // Clean up markdown block styling if LLM accidentally added them despite the system instruction
       const cleanedText = responseText
         .replace(/```json/g, '')
@@ -182,8 +185,11 @@ Do not include any markdown fences (like \`\`\`json or \`\`\`) in your output. R
     }
 
     return NextResponse.json({
-      ...parsedResult,
-      isDemoMode: false,
+      success: true,
+      content: {
+        ...parsedResult,
+        isDemoMode: false,
+      }
     });
   } catch (error: any) {
     console.error('[/api/business-audit] Fatal Error:', error);
@@ -202,7 +208,7 @@ Do not include any markdown fences (like \`\`\`json or \`\`\`) in your output. R
       : (error?.message || 'Failed to generate audit. Please try again.');
 
     return NextResponse.json(
-      { error: errorMessage },
+      { success: false, error: errorMessage },
       { status: is503 ? 503 : 500 }
     );
   }

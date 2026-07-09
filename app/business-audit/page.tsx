@@ -131,17 +131,17 @@ export default function BusinessAuditPage() {
       const contentType = res.headers.get('content-type');
       if (contentType && contentType.includes('application/json')) {
         try {
-          data = await res.json();
-        } catch (jsonErr) {
-          throw new Error('Failed to parse response data.');
+          const json = await res.json();
+          if (!res.ok || json.success === false) {
+            throw new Error(json.error || 'Failed to generate business audit');
+          }
+          data = json.content;
+        } catch (jsonErr: any) {
+          throw new Error(jsonErr.message || 'Failed to parse response data.');
         }
       } else {
         const textErr = await res.text();
         throw new Error(textErr || `Server returned status ${res.status}`);
-      }
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to generate business audit');
       }
 
       // Add unique ID and timestamp to the result

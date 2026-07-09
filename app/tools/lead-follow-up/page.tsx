@@ -62,8 +62,8 @@ export default function LeadFollowUpPage() {
         body: JSON.stringify({ tool: 'lead-follow-up', data }),
       });
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error);
-      setResults(json.sections);
+      if (!res.ok || json.success === false) throw new Error(json.error || 'Failed to generate');
+      setResults(json.content);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
     } finally {

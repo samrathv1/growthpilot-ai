@@ -141,38 +141,35 @@ export async function POST(req: NextRequest) {
             "question": "What is the expected timeline for results?",
             "answer": "Most of our clients report clear progression and milestones within the first 14 to 30 days of onboarding."
           },
-          {
-            "question": "Is there a support channel?",
-            "answer": "Yes, we provide WhatsApp support channels and email guidance to address any queries within 24 hours."
-          }
+          { "question": `Is there a free trial?`, "answer": `Yes, you can test all features free for 14 days.` }
         ],
         final_cta: {
-          "heading": `Ready to scale your business and achieve your goals?`,
-          "subheading": `Onboarding is limited each month to guarantee quality coach-to-client attention. Secure your spot now.`,
-          "button_text": cleanCTA
+          heading: `Ready to get started?`,
+          subheading: `Join other successful businesses today.`,
+          button_text: cleanCTA
         },
         seo: {
-          "meta_title": `${cleanOffer} | ${cleanName}`,
-          "meta_description": `Transform your experience with our specialized ${cleanType} services. Built for ${cleanAudience} to achieve "${cleanGoal}".`,
-          "keywords": ["business growth", cleanType, cleanOffer, "leads automation"]
+          meta_title: `Scale with ${cleanName} — ${cleanOffer}`,
+          meta_description: `Learn how ${cleanName} helps ${cleanAudience} achieve "${cleanGoal}" effectively.`,
+          keywords: [cleanName, cleanType, `smart strategy`]
         },
         expert_review_summary: {
-          "what_to_improve": [
+          what_to_improve: [
             `Incorporate the primary CTA button text ("${cleanCTA}") more times throughout the layout sections.`,
             `Introduce an interactive quiz step prior to lead capture to filter visitors.`,
             `Embed custom visuals or workflow wireframes illustrative of the features.`
           ],
-          "conversion_score": 85,
-          "best_next_action": `Place a limited-offer timer at the top to increase urgency.`
+          conversion_score: 85,
+          best_next_action: `Place a limited-offer timer at the top to increase urgency.`
         }
       };
 
-      return NextResponse.json(mockResponse);
+      return NextResponse.json({ success: true, content: mockResponse });
     }
 
     // Initialize Google Gen AI client using @google/genai
     const ai = new GoogleGenAI({ apiKey });
-    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite';
+    const model = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
 
     const systemPrompt = `You are an expert AI copywriter, conversion strategist, and landing page designer. Analyze the given business details and generate a highly converting landing page copy layout in raw JSON format. Keep advice simple, useful, and client-ready. Do not write generic text. Return only valid JSON matching the requested structure.`;
 
@@ -320,8 +317,11 @@ Do not include any markdown fences (like \`\`\`json or \`\`\`) in your output. R
     }
 
     return NextResponse.json({
-      ...parsedResult,
-      isDemoMode: false,
+      success: true,
+      content: {
+        ...parsedResult,
+        isDemoMode: false,
+      }
     });
   } catch (error: any) {
     console.error('[/api/landing-page-generator] Fatal Error:', error);

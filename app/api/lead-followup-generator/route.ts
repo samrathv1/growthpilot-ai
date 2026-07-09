@@ -42,44 +42,36 @@ export async function POST(req: NextRequest) {
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
-      // Mock fallback
-      console.log('[/api/lead-followup-generator] GEMINI_API_KEY not configured. Returning dynamic mock response.');
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
+      console.error('[/api/lead-followup-generator] Missing GEMINI_API_KEY environment variable. Defaulting to mock response.');
+      await new Promise(resolve => setTimeout(resolve, 1800)); // Simulate API delay
+      
       const mockResponse = {
         isDemoMode: true,
         lead_summary: {
           lead_stage: cleanLeadStage,
-          intent_level: "High",
-          recommended_approach: `Focus on ${cleanMainGoal.toLowerCase()} by addressing their interest in ${cleanLeadInterest}.`,
-          lead_score: 85
+          intent_level: cleanLeadStage === 'Cold' ? 'Low' : cleanLeadStage === 'Warm' ? 'Medium' : 'High',
+          recommended_approach: `Provide immediate value and address the core objection: "${cleanLeadObjection}".`,
+          lead_score: cleanLeadStage === 'Cold' ? 45 : cleanLeadStage === 'Warm' ? 70 : 90
         },
         whatsapp_messages: [
-          { type: "First follow-up", message: `Hi ${cleanLeadName}! 👋 This is from ${cleanBusinessName}. Just checking in about your interest in ${cleanLeadInterest}. Do you have a quick moment to chat?` },
-          { type: "Second follow-up", message: `Hey ${cleanLeadName}, I know you're busy! I don't want you to miss out on ${cleanLeadInterest}. Let me know if you still want to ${cleanMainGoal.toLowerCase()}.` },
-          { type: "Final follow-up", message: `Hi ${cleanLeadName}, I'll be closing the list for ${cleanLeadInterest} soon. If things have changed, no worries! Just reply "NOT NOW". Otherwise, let's get you set up! 🚀` }
+          { type: "First follow-up", message: `Hi ${cleanLeadName}! I'm following up on your interest in our ${cleanLeadInterest} at ${cleanBusinessName}. Did you have any questions about the package details?` },
+          { type: "Second follow-up", message: `Hey ${cleanLeadName}! Just checking in to see if you had a moment to review the outline we sent over. Let me know if you want to jump on a quick call to map out your goals!` },
+          { type: "Final follow-up", message: `Hi ${cleanLeadName}. Since I haven't heard back, I'll assume now isn't the best time. Feel free to reach out whenever you are ready to kick off your project!` }
         ],
         email_followups: [
-          {
-            subject: `Quick question about ${cleanLeadInterest}`,
-            body: `Hi ${cleanLeadName},\n\nI hope you're having a great week.\n\nI'm reaching out from ${cleanBusinessName} regarding your interest in ${cleanLeadInterest}.\n\nMy goal is to help you ${cleanMainGoal.toLowerCase()}. Let me know what time works best for a quick chat to discuss the next steps.\n\nBest,\nThe ${cleanBusinessName} Team`
-          }
+          { subject: `Getting started with ${cleanLeadInterest} at ${cleanBusinessName}`, body: `Hi ${cleanLeadName},\n\nThanks for reaching out! We specialize in helping businesses like yours achieve their goals through our personalized ${cleanLeadInterest}.\n\nLet me know when you are free for a quick discovery chat this week.\n\nBest,\nSales Team` }
         ],
         call_script: {
-          opening: `Hi, is this ${cleanLeadName}? This is [Your Name] from ${cleanBusinessName}. How are you doing today?`,
+          opening: `Hi ${cleanLeadName}, this is Sales from ${cleanBusinessName}. I noticed you requested details on our ${cleanLeadInterest}...`,
           questions_to_ask: [
-            `What originally sparked your interest in ${cleanLeadInterest}?`,
-            `What is the biggest challenge you're facing right now with [topic]?`,
-            `If we could solve [problem] for you this week, would you be ready to move forward?`
+            `What is the biggest roadblock you are currently facing?`,
+            `How soon are you hoping to launch your growth plan?`
           ],
-          pitch: `Based on what you've told me, ${cleanLeadInterest} is exactly what you need because [benefit]. We can help you ${cleanMainGoal.toLowerCase()} very quickly.`,
-          closing_line: `Does that sound like a plan? Let's get you onboarded.`
+          pitch: `Our ${cleanLeadInterest} is designed specifically to address this pain point by streamlining your workflow.`,
+          closing_line: `Let's schedule a 10-minute demo to get you set up.`
         },
         objection_handling: [
-          {
-            objection: cleanLeadObjection !== 'None' ? cleanLeadObjection : "Price is too high",
-            response: `I completely understand, ${cleanLeadName}. It is an investment. But think about the cost of not solving this right now. Our ${cleanLeadInterest} is designed to give you an ROI that covers the cost within the first month.`
-          }
+          { objection: cleanLeadObjection !== 'None' ? cleanLeadObjection : "Pricing is too high", response: `We offer flexible payment structures and guarantee positive ROI within 60 days.` }
         ],
         closing_messages: [
           { message: `Ready to get started, ${cleanLeadName}? Here is the link to complete your setup for ${cleanLeadInterest}. Let me know once it's done!` }
@@ -92,11 +84,11 @@ export async function POST(req: NextRequest) {
         final_recommendation: `Keep the communication ${cleanTone.toLowerCase()}. Since they are a ${cleanLeadStage.toLowerCase()}, your priority is to ${cleanMainGoal.toLowerCase()} quickly before they lose interest.`
       };
 
-      return NextResponse.json(mockResponse);
+      return NextResponse.json({ success: true, content: mockResponse });
     }
 
     const ai = new GoogleGenAI({ apiKey });
-    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite';
+    const model = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
 
     const systemPrompt = `You are an expert sales strategist and copywriter. Create a highly personalized, high-converting lead follow-up plan based on the provided business and lead details. The tone must match the requested style. Avoid generic spammy language; write like a top-tier human sales professional who prioritizes relationship-building and conversion. Return ONLY valid JSON.`;
 
@@ -209,8 +201,11 @@ Important Rules:
     }
 
     return NextResponse.json({
-      ...parsedResult,
-      isDemoMode: false,
+      success: true,
+      content: {
+        ...parsedResult,
+        isDemoMode: false,
+      }
     });
   } catch (error: any) {
     console.error('[/api/lead-followup-generator] Fatal Error:', error);

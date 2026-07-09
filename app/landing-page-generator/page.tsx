@@ -168,17 +168,17 @@ export default function LandingPageGeneratorPage() {
       const contentType = res.headers.get('content-type');
       if (contentType && contentType.includes('application/json')) {
         try {
-          data = await res.json();
-        } catch (parseErr) {
-          throw new Error('Failed to parse response data.');
+          const json = await res.json();
+          if (!res.ok || json.success === false) {
+            throw new Error(json.error || 'Failed to generate landing page copy');
+          }
+          data = json.content;
+        } catch (parseErr: any) {
+          throw new Error(parseErr.message || 'Failed to parse response data.');
         }
       } else {
         const text = await res.text();
         throw new Error(text || `Server returned error status ${res.status}`);
-      }
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to generate landing page copy');
       }
 
       setCurrentResult(data);

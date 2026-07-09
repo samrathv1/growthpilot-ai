@@ -78,12 +78,13 @@ export default function GrowthAgentPage() {
         body: JSON.stringify(formData),
       });
 
-      const data = await res.json();
+      const json = await res.json();
 
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to generate growth plan');
+      if (!res.ok || json.success === false) {
+        throw new Error(json.error || 'Failed to generate growth plan');
       }
 
+      const data = json.content;
       setResult(data);
       savePlanToHistory(data);
     } catch (err: any) {
