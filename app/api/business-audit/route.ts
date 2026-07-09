@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
 
     // Initialize Google Gen AI client using @google/genai
     const ai = new GoogleGenAI({ apiKey });
-    const model = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 
     const systemPrompt = `You are an expert AI business consultant and growth strategist. Analyze the given business details and create a practical business audit. Keep the advice simple, useful, and action-focused. Do not give generic advice. Give suggestions that can help the business improve leads, website, content, sales follow-up, and automation. Return only valid JSON in the required structure.`;
 

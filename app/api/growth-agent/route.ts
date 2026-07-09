@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
     }
 
     const ai = new GoogleGenAI({ apiKey });
-    const model = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 
     const systemPrompt = `You are an elite AI Business Consultant and Growth Strategist. Your goal is to analyze a business's current state and generate a hyper-specific, actionable growth plan spanning website, content, leads, sales, and automation. Give practical actions the owner can actually do based on their budget and timeframe. Avoid generic fluff. Return ONLY valid JSON matching the exact requested structure.`;
 

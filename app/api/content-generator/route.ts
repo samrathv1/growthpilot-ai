@@ -115,7 +115,7 @@ export async function POST(req: NextRequest) {
 
     // Initialize Google Gen AI client
     const ai = new GoogleGenAI({ apiKey });
-    const model = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 
     const systemPrompt = `You are an expert social media strategist, content marketer, and copywriter. Create a comprehensive, platform-specific content plan for the given business. Make content specific, actionable, and ready to use. Avoid generic filler content. Every caption, script, and ad copy should be written as if a real marketing professional created it for a paying client. Return only valid JSON in the required structure.`;
 

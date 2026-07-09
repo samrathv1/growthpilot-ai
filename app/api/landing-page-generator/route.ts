@@ -170,7 +170,7 @@ export async function POST(req: NextRequest) {
 
     // Initialize Google Gen AI client using @google/genai
     const ai = new GoogleGenAI({ apiKey });
-    const model = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 
     const systemPrompt = `You are an expert AI copywriter, conversion strategist, and landing page designer. Analyze the given business details and generate a highly converting landing page copy layout in raw JSON format. Keep advice simple, useful, and client-ready. Do not write generic text. Return only valid JSON matching the requested structure.`;
 

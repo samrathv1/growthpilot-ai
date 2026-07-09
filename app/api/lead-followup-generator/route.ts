@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
     }
 
     const ai = new GoogleGenAI({ apiKey });
-    const model = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 
     const systemPrompt = `You are an expert sales strategist and copywriter. Create a highly personalized, high-converting lead follow-up plan based on the provided business and lead details. The tone must match the requested style. Avoid generic spammy language; write like a top-tier human sales professional who prioritizes relationship-building and conversion. Return ONLY valid JSON.`;
 

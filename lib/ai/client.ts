@@ -66,7 +66,7 @@ async function callGemini(tool: ToolId, prompt: string): Promise<ResultSection[]
     throw new Error('GEMINI_API_KEY is not configured');
   }
 
-  const model = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+  const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
   console.log(`[/lib/ai/client] Initializing GoogleGenAI client for tool "${tool}" using model "${model}"...`);
 
   try {
