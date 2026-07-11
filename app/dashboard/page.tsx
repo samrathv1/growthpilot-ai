@@ -5,8 +5,8 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 import { ClipboardList, FileText, PenTool, MessageSquare, Zap, ArrowRight } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Dashboard — GrowthPilot AI',
-  description: 'Access all 5 AI growth tools from your GrowthPilot AI dashboard.',
+  title: 'Dashboard — LearnVolt AI',
+  description: 'Access all 5 AI growth tools from your LearnVolt AI dashboard.',
 };
 
 const tools = [
@@ -83,7 +83,7 @@ export default function DashboardPage() {
           <div>
             <p className="text-xs text-slate-500 font-medium">Welcome to</p>
             <h1 className="text-xl font-black text-white">
-              GrowthPilot <span className="text-[#38F29B]">AI</span>
+              LearnVolt <span className="text-[#38F29B]">AI</span>
             </h1>
           </div>
         </div>

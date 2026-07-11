@@ -21,7 +21,12 @@ export async function POST(req: NextRequest) {
       conversionScore,
       aiBestNextAction,
       generatedLandingPageData,
-      createdAt
+      createdAt,
+      toolName,
+      offer,
+      targetAudience,
+      tone,
+      mainGoal
     } = body;
 
     // Validate required fields
@@ -74,11 +79,11 @@ export async function POST(req: NextRequest) {
 
     const formattedJSON = JSON.stringify(generatedLandingPageData || {}, null, 2);
 
-    const emailSubject = `New GrowthPilot AI Review Request — ${businessName}`;
+    const emailSubject = `New GrowthPilot AI Review Request — ${toolName || 'Landing Page Generator'} — ${businessName}`;
 
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #f8fafc; color: #1e293b;">
-        <h2 style="color: #4f46e5; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 0;">🚀 New Landing Page Review Request</h2>
+        <h2 style="color: #4f46e5; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 0;">🚀 New Review Request — ${toolName || 'Landing Page Generator'}</h2>
         
         <h3 style="color: #0f172a; margin-top: 20px;">1. Contact Details</h3>
         <table style="width: 100%; border-collapse: collapse;">
@@ -99,12 +104,32 @@ export async function POST(req: NextRequest) {
         <h3 style="color: #0f172a; margin-top: 25px;">2. Project Details</h3>
         <table style="width: 100%; border-collapse: collapse;">
           <tr>
-            <td style="padding: 6px 0; font-weight: bold; width: 150px;">Business Name:</td>
+            <td style="padding: 6px 0; font-weight: bold; width: 150px;">Tool Used:</td>
+            <td style="padding: 6px 0; color: #4f46e5; font-weight: bold;">${toolName || 'Landing Page Generator'}</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 0; font-weight: bold;">Business Name:</td>
             <td style="padding: 6px 0;">${businessName}</td>
           </tr>
           <tr>
             <td style="padding: 6px 0; font-weight: bold;">Business Type:</td>
             <td style="padding: 6px 0;">${businessType || 'N/A'}</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 0; font-weight: bold;">Offer / Service:</td>
+            <td style="padding: 6px 0;">${offer || 'N/A'}</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 0; font-weight: bold;">Target Audience:</td>
+            <td style="padding: 6px 0;">${targetAudience || 'N/A'}</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 0; font-weight: bold;">Writing Tone:</td>
+            <td style="padding: 6px 0;">${tone || 'N/A'}</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 0; font-weight: bold;">Landing Page Goal:</td>
+            <td style="padding: 6px 0;">${mainGoal || 'N/A'}</td>
           </tr>
           <tr>
             <td style="padding: 6px 0; font-weight: bold;">Landing Page Type:</td>
@@ -151,7 +176,7 @@ export async function POST(req: NextRequest) {
     `;
 
     const emailText = `
-🚀 NEW LANDING PAGE REVIEW REQUEST
+🚀 NEW REVIEW REQUEST — ${toolName || 'Landing Page Generator'}
 
 1. CONTACT DETAILS
 Name: ${name}
@@ -159,8 +184,13 @@ Email: ${email}
 WhatsApp: ${whatsapp}
 
 2. PROJECT DETAILS
+Tool Used: ${toolName || 'Landing Page Generator'}
 Business Name: ${businessName}
 Business Type: ${businessType || 'N/A'}
+Offer / Service: ${offer || 'N/A'}
+Target Audience: ${targetAudience || 'N/A'}
+Writing Tone: ${tone || 'N/A'}
+Landing Page Goal: ${mainGoal || 'N/A'}
 Landing Page Type: ${landingPageType || 'N/A'}
 Selected Layout: ${selectedLayout || 'N/A'}
 Budget: ${budget}

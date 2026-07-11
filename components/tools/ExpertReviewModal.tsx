@@ -16,6 +16,10 @@ interface ExpertReviewModalProps {
   conversionScore?: number;
   aiBestNextAction?: string;
   generatedLandingPageData?: any;
+  targetAudience?: string;
+  tone?: string;
+  mainGoal?: string;
+  toolName?: string;
 }
 
 export default function ExpertReviewModal({ 
@@ -30,7 +34,11 @@ export default function ExpertReviewModal({
   generatedSubheadline = '',
   conversionScore = 85,
   aiBestNextAction = 'N/A',
-  generatedLandingPageData = {}
+  generatedLandingPageData = {},
+  targetAudience = '',
+  tone = '',
+  mainGoal = '',
+  toolName = 'Landing Page Generator'
 }: ExpertReviewModalProps) {
   const [formData, setFormData] = useState({
     name: '',
@@ -39,13 +47,14 @@ export default function ExpertReviewModal({
     budget: 'Under ₹25,000 / $300',
     timeline: '1-2 Weeks',
     requestType: 'Build this as a full website',
-    extraNotes: '',
+    extraRequirements: '',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isEmailFailed, setIsEmailFailed] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   if (!isOpen) return null;
 
@@ -68,6 +77,7 @@ export default function ExpertReviewModal({
     const fullPayload = {
       ...formData,
       businessName,
+      offer,
       businessType,
       landingPageType,
       selectedLayout,
@@ -76,6 +86,10 @@ export default function ExpertReviewModal({
       conversionScore,
       aiBestNextAction,
       generatedLandingPageData,
+      targetAudience,
+      tone,
+      mainGoal,
+      toolName,
       createdAt: new Date().toLocaleString(),
     };
 
@@ -110,6 +124,7 @@ export default function ExpertReviewModal({
       }
 
       setIsSuccess(true);
+      setHasSubmitted(true);
     } catch (err: any) {
       console.error('Email notification failed:', err);
       setIsEmailFailed(true);
@@ -247,8 +262,8 @@ export default function ExpertReviewModal({
               <div>
                 <label className="block text-[9px] font-bold text-slate-455 uppercase tracking-wider mb-1">Extra Requirements (Optional)</label>
                 <textarea
-                  name="extraNotes"
-                  value={formData.extraNotes}
+                  name="extraRequirements"
+                  value={formData.extraRequirements}
                   onChange={handleChange}
                   rows={2}
                   placeholder="e.g. Include branding guidelines, custom graphics, domains needed, or specific integrations..."
@@ -260,7 +275,7 @@ export default function ExpertReviewModal({
               <div className="pt-2 flex-shrink-0">
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || hasSubmitted}
                   className="w-full btn-gradient py-2.5 px-4 rounded-xl text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (

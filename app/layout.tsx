@@ -13,16 +13,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GrowthPilot AI — Business AI Toolkit",
+  title: "LearnVolt AI — Business AI Toolkit",
   description:
     "AI-powered business toolkit to generate website copy, content strategies, lead follow-ups, business audits, and growth actions — in seconds.",
   keywords: [
     "AI business tools", "business growth AI", "landing page generator",
-    "content generator AI", "business audit AI", "GrowthPilot AI",
+    "content generator AI", "business audit AI", "LearnVolt AI",
     "lead follow-up AI", "growth agent AI",
   ],
   openGraph: {
-    title: "GrowthPilot AI — Business AI Toolkit",
+    title: "LearnVolt AI — Business AI Toolkit",
     description: "AI-powered toolkit to grow your business faster. Generate audits, copy, content, and growth plans in seconds.",
     type: "website",
     images: ["/images/growthpilot-banner.png"],

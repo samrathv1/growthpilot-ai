@@ -779,6 +779,10 @@ CTA Text: ${res.final_cta.button_text}
           conversionScore={currentResult.expert_review_summary?.conversion_score || 85}
           aiBestNextAction={currentResult.expert_review_summary?.best_next_action || 'N/A'}
           generatedLandingPageData={currentResult}
+          targetAudience={formData.targetAudience}
+          tone={formData.tone}
+          mainGoal={formData.mainGoal}
+          toolName="Landing Page Generator"
         />
       )}
 
