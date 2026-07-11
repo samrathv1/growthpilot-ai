@@ -99,9 +99,10 @@ function ResultSectionCard({ section, index }: ResultSectionCardProps) {
 interface ResultSectionProps {
   sections: ResultSection[];
   onGenerateAgain?: () => void;
+  onRequestReview?: () => void;
 }
 
-export default function ResultSection({ sections, onGenerateAgain }: ResultSectionProps) {
+export default function ResultSection({ sections, onGenerateAgain, onRequestReview }: ResultSectionProps) {
   const allText = sections.map((s) => `## ${s.title}\n\n${s.content}`).join('\n\n---\n\n');
 
   return (
@@ -114,7 +115,7 @@ export default function ResultSection({ sections, onGenerateAgain }: ResultSecti
             {sections.length} sections generated
           </span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <CopyButton text={allText} label="Copy All" />
           {onGenerateAgain && (
             <button
@@ -122,6 +123,15 @@ export default function ResultSection({ sections, onGenerateAgain }: ResultSecti
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#38F29B]/10 text-[#38F29B] border border-[#38F29B]/25 hover:bg-[#38F29B]/20 transition-all"
             >
               ↺ Generate Again
+            </button>
+          )}
+          {onRequestReview && (
+            <button
+              onClick={onRequestReview}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white border border-cyan-400/30 hover:border-cyan-400/60 transition-all cursor-pointer"
+              style={{ background: 'linear-gradient(135deg, #22D3EE 0%, #38F29B 100%)', color: '#0a0f1e' }}
+            >
+              ⚡ Request Expert Review
             </button>
           )}
         </div>

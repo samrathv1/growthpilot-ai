@@ -7,10 +7,17 @@ import ToolForm, { FormField } from '@/components/tools/ToolForm';
 import ResultSection from '@/components/tools/ResultSection';
 import LoadingState from '@/components/ui/LoadingState';
 import EmptyState from '@/components/ui/EmptyState';
-import { FileText } from 'lucide-react';
+import ExpertReviewModal from '@/components/tools/ExpertReviewModal';
+import { FileText, Award } from 'lucide-react';
 import { ResultSection as ResultSectionType } from '@/types';
 
 const fields: FormField[] = [
+  {
+    id: 'businessName',
+    label: 'Business Name',
+    placeholder: 'e.g. FitPro Studio',
+    type: 'text',
+  },
   {
     id: 'businessType',
     label: 'Business Type',
@@ -50,6 +57,7 @@ export default function LandingPageGeneratorPage() {
   const [results, setResults] = useState<ResultSectionType[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [lastData, setLastData] = useState<Record<string, string> | null>(null);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   const handleSubmit = async (data: Record<string, string>) => {
     setIsLoading(true);
@@ -74,6 +82,11 @@ export default function LandingPageGeneratorPage() {
   const handleGenerateAgain = () => {
     if (lastData) handleSubmit(lastData);
   };
+
+  // Build the full generated copy as a structured object for the email payload
+  const generatedLandingPageData = results
+    ? { sections: results.map((s) => ({ title: s.title, content: s.content })) }
+    : {};
 
   return (
     <DashboardLayout>
@@ -100,7 +113,27 @@ export default function LandingPageGeneratorPage() {
           </div>
         )}
         {!isLoading && !error && results && (
-          <ResultSection sections={results} onGenerateAgain={handleGenerateAgain} />
+          <>
+            <ResultSection sections={results} onGenerateAgain={handleGenerateAgain} onRequestReview={() => setIsReviewModalOpen(true)} />
+
+            {/* Bottom full-width CTA */}
+            <div className="mt-8 pt-6 border-t border-white/5">
+              <button
+                onClick={() => setIsReviewModalOpen(true)}
+                className="w-full py-3.5 px-6 rounded-xl font-bold text-sm flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.01]"
+                style={{
+                  background: 'linear-gradient(135deg, #22D3EE 0%, #38F29B 100%)',
+                  color: '#0a0f1e',
+                }}
+              >
+                <Award className="w-4.5 h-4.5" />
+                🚀 Build This Landing Page — Request Expert Review
+              </button>
+              <p className="text-center text-[11px] text-slate-500 mt-2">
+                Get a professional review or have this landing page built as a live website.
+              </p>
+            </div>
+          </>
         )}
         {!isLoading && !error && !results && (
           <EmptyState
@@ -110,6 +143,23 @@ export default function LandingPageGeneratorPage() {
           />
         )}
       </div>
+
+      {/* Expert Review Modal */}
+      {results && lastData && (
+        <ExpertReviewModal
+          isOpen={isReviewModalOpen}
+          onClose={() => setIsReviewModalOpen(false)}
+          businessName={lastData.businessName || lastData.businessType || ''}
+          offer={lastData.offer || ''}
+          businessType={lastData.businessType || ''}
+          landingPageType="Landing Page"
+          targetAudience={lastData.targetAudience || ''}
+          tone={lastData.tone || ''}
+          mainGoal={lastData.mainGoal || ''}
+          toolName="Landing Page Generator"
+          generatedLandingPageData={generatedLandingPageData}
+        />
+      )}
     </DashboardLayout>
   );
 }
